@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Change to the project directory
+cd /my-web-app
+
 # Set the -e flag to exit immediately if any command returns a non-zero exit code
 set -e
 
