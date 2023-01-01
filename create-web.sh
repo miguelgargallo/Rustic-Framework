@@ -53,41 +53,48 @@ function create_project {
 create_project
 cd "$PROJECT_NAME"
 
-# Add Actix-web as a dependency
+# Add Actix-web and env_logger as dependencies
 echo '
-[dependencies]
-actix-web = "2.0"
-env_logger = "0.7"
-' >>Cargo.toml
+        [package]
+        name = "my-web-app"
+        version = "0.1.0"
+        edition = "2021"
+
+        # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+        [dependencies]
+        actix-web = "2.0"
+        env_logger = "0.7"
+        ' >>Cargo.toml
 
 # Create a .gitignore file
 echo '
-/target
-Cargo.lock
-' >>.gitignore
+        /target
+        Cargo.lock
+        ' >>.gitignore
 
 # Create a main.rs file with the following code:
 echo '
-extern crate actix_web;
+        extern crate actix_web;
 
-use actix_web::{App, HttpServer, Result};
-use actix_web::http::Method;
-use actix_web::middleware::Logger;
-use actix_web::web::{self, resource, service};
+        use actix_web::{App, HttpServer, Result};
+        use actix_web::http::Method;
+        use actix_web::middleware::Logger;
+        use actix_web::web::{self, resource, service};
 
-fn index() -> Result<web::HttpResponse> {
-    Ok(web::HttpResponse::build(200)
-        .content_type("text/html")
-        .body("<h1>Hello, World!</h1>"))
-}
+        fn index() -> Result<web::HttpResponse> {
+            Ok(web::HttpResponse::build(200)
+                .content_type("text/html")
+                .body("<h1>Hello, World!</h1>"))
+        }
 
-fn default() -> Result<web::HttpResponse> {
-    Ok(web::HttpResponse::build(404)
-        .content_type("text/html")
-        .body("<h1>404 Page Not Found</h1>"))
-}
+        fn default() -> Result<web::HttpResponse> {
+            Ok(web::HttpResponse::build(404)
+                .content_type("text/html")
+                .body("<h1>404 Page Not Found</h1>"))
+        }
 
-fn main() -> std::io::Result<()> {
+        fn main() -> std::io::Result<()> {
     std::env::set_var("RUST_LOG", "actix_web=info");
     env_logger::init();
 
