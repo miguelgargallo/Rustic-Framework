@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-# Change to the root of the Rust project
-cd rust-webserver
-
 # Create the Rust project and add the necessary dependencies
 ./create.sh || exit 1
+
+# Change to the root of the Rust project
+cd rust-webserver
 
 # Build the project
 ./build.sh || exit 1
