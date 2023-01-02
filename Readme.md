@@ -1,85 +1,68 @@
-# Rustic Framework, a Paper by Miguel Gargallo
+# Web Server
 
-Here is a simple example of a Rust web application that uses the Actix-web framework to serve a static HTML file:
+This is a simple Bash script that starts a Rust web server and opens the default web browser to the site.
 
-create.sh
+## Requirements
 
-This script will create a new Rust project, check for the latest compatible versions of the actix-web, env_logger, and actix-rt crates, and add them to the Cargo.toml file.
+- Rust (and Cargo) must be installed on your system.
+- You must have created a Rust project and added the necessary dependencies (e.g. actix-web and serde).
+
+## Usage
+
+## Create the server
 
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
 # Create a new Rust project
-cargo new --bin rust-webserver
-cd rust-webserver
+cargo new web_project
 
-# Check for the latest compatible versions of the `actix-web`, `env_logger`, and `actix-rt` crates
-actix_web_version=$(cargo search --limit=1 actix-web | grep -oP '^actix-web\s+\K[^\s]+')
-env_logger_version=$(cargo search --limit=1 env_logger | grep -oP '^env_logger\s+\K[^\s]+')
-actix_rt_version=$(cargo search --limit=1 actix-rt | grep -oP '^actix-rt\s+\K[^\s]+')
+# Change into the project directory
+cd web_project
 
-# Add the necessary dependencies to the project's `Cargo.toml` file
+# Add the necessary dependencies
+cargo add actix-web
+cargo add serde
+
+# Create the necessary project files
+touch src/main.rs
+touch src/lib.rs
+
+# Add a simple "Hello, World!" server to main.rs
 echo "
-[dependencies]
-actix-web = \"$actix_web_version\"
-env_logger = \"$env_logger_version\"
-actix-rt = \"$actix_rt_version\"
-" >> Cargo.toml
+fn main() {
+    use actix_web::{web, App, HttpResponse, HttpServer};
+
+    async fn index() -> HttpResponse {
+        HttpResponse::Ok().body("Hello, World!")
+    }
+
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(index))
+    })
+    .bind("0.0.0.0:8080")
+    .unwrap()
+    .run()
+    .await
+}
+" >>src/main.rs
+
+# Build and run the project
+cargo run
 ```
 
-## build.sh
-
-This script will build the Rust project.
+## Run the server
 
 ```bash
-#!/usr/bin/env bash
+#!/bin/bash
 
-# Build the project
-cargo build
-```
+# Start the web server in the background
+cargo run &
 
-# run-dev.sh
+# Wait for the server to start
+sleep 5
 
-This script will run the Rust project in dev mode, which will automatically rebuild the project and restart the server when changes are made to the source code.
-
-```bash
-#!/usr/bin/env bash
-
-# Run the project in dev mode
-cargo watch -x run
-```
-
-# start.sh
-
-This script will prompt the user to specify a port number for the Rust web server, or use the default of 3000 if no input is provided. The server will then be started on the specified port.
-
-```bash
-#!/usr/bin/env bash
-
-# Read the port number from the user, or use the default of 3000
-read -p "Enter a port number (default: 3000): " port
-port=${port:-3000}
-
-# Start the server on the specified port
-cargo run -- --port $port
-```
-
-# do.sh
-
-This script will run the create.sh, build.sh, and start.sh scripts in sequence.
-
-```bash
-#!/usr/bin/env bash
-
-# Create the Rust project and add the necessary dependencies
-./create.sh || exit 1
-
-# Build the project
-./build.sh || exit 1
-
-# Run the project in dev mode
-./run-dev.sh || exit 1
-
-# Start the server
-./start.sh || exit 1
+# Open the default web browser to the site
+xdg-open "http://0.0.0.0:8080"
 ```
