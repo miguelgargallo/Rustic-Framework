@@ -18,10 +18,7 @@ actix-rt = \"$actix_rt_version\"
 " >>Cargo.toml
 
 # Create a file `src/main.rs` with the code for the web server
-echo 'use actix_web::{web, App, HttpResponse, HttpServer};
-use env_logger;
-
-fn main() -> std::io::Result<()> {
+echo 'fn main() -> std::io::Result<()> {
     env_logger::init();
     HttpServer::new(|| {
         App::new()
